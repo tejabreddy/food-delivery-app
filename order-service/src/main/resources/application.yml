@@ -1,0 +1,30 @@
+server:
+  port: 8082
+  error:
+    include-message: always
+spring:
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://localhost:3306/FoodDelivery
+    username: root
+    password: root1221
+    driverClassName: com.mysql.cj.jdbc.Driver
+    tomcat:
+      initial-size: 2
+      log-abandoned: true
+      remove-abandoned: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG

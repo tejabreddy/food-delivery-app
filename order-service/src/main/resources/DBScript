@@ -1,0 +1,109 @@
+
+
+USE FoodDelivery;
+
+-- Create Orders Table
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    user_id INT,
+    restaurant_id INT,
+    order_date TIMESTAMP,
+    total_amount DECIMAL(10, 2),
+    status ENUM('Placed', 'Accepted', 'Processing', 'Delivered', 'Cancelled'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
+);
+
+-- Create Order Items Table
+CREATE TABLE OrderItems (
+    order_item_id INT PRIMARY KEY,
+    order_id INT,
+    item_id INT,
+    quantity INT,
+    subtotal DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (item_id) REFERENCES MenuItems(item_id)
+);
+
+-- Create Cart Table
+CREATE TABLE Cart (
+    cart_id INT PRIMARY KEY,
+    user_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- Create Cart Items Table
+CREATE TABLE CartItems (
+    cart_item_id INT PRIMARY KEY,
+    cart_id INT,
+    item_id INT,
+    quantity INT,
+    subtotal DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cart_id) REFERENCES Cart(cart_id),
+    FOREIGN KEY (item_id) REFERENCES MenuItems(item_id)
+);
+
+CREATE TABLE Restaurants (
+    restaurant_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    start_time TIME,
+    end_time TIME,
+    is_available BOOLEAN,
+    address TEXT,
+    phone_number VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE MenuItems (
+    item_id INT PRIMARY KEY,
+    restaurant_id INT,
+    name VARCHAR(255),
+    category ENUM('Appetizer', 'Main Course', 'Dessert', 'Beverage', 'salad', Other'),
+    description TEXT,
+    price DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
+);
+
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    role ENUM('Customer', 'Restaurant Staff', 'Admin'),
+    phone_number VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE RestaurantReviews (
+    review_id INT PRIMARY KEY,
+    user_id INT,
+    restaurant_id INT,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    review_text TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
+);
+
+CREATE TABLE MenuItemReviews (
+    review_id INT PRIMARY KEY,
+    user_id INT,
+    item_id INT,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    review_text TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (item_id) REFERENCES MenuItems(item_id)
+);
